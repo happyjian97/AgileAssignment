@@ -448,7 +448,7 @@ public class HrAddDeliveryMen extends javax.swing.JInternalFrame {
                                           try {
                                              ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMen.dat"));
                                              ooStream.writeObject(deliveryMenList);
-                                             JOptionPane.showMessageDialog(null, "New Delivery Man added", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                                             JOptionPane.showMessageDialog(null, "New Hr Executive added", "Info", JOptionPane.INFORMATION_MESSAGE);
                                           } catch (FileNotFoundException ex) {
                                              JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
                                           } catch (IOException ex) {
