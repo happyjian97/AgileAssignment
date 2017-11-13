@@ -85,7 +85,7 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
                         sleep(1000);
                     }
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(DeliverymanAttendance.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DeliverymanAttendances.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         };
