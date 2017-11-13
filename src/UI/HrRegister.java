@@ -404,7 +404,7 @@ public class HrRegister extends javax.swing.JFrame {
                                          try {
                                             ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("HrExecutive.dat"));
                                             ooStream.writeObject(HrList);
-                                            JOptionPane.showMessageDialog(null, "New Delivery Man added", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                                            JOptionPane.showMessageDialog(null, "New Delivery Man added", "Info", JOptionPane.INFORMATION_MESSAGE);
                                         } catch (FileNotFoundException ex) {
                                             JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
                                         } catch (IOException ex) {
