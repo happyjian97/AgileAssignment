@@ -386,7 +386,6 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
                         DmQueue.add(temp);
                     }
                 }
-                
                 try {
                         ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMenQueue.dat"));
                         ooStream.writeObject(DmQueue);
