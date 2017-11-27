@@ -6,11 +6,14 @@
 package UI;
 
 import domain.DeliveryMen;
+import domain.DeliveryOrder;
 import domain.Order;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -22,9 +25,9 @@ import javax.swing.JOptionPane;
 public class DeliverymanOrder extends javax.swing.JInternalFrame {
 
     private List<DeliveryMen> DmListTxt = new ArrayList<>();
-    
-    
-    
+    private List<Order> orderList = new ArrayList<>();
+    private List<DeliveryOrder> deliveryList = new ArrayList<>();
+    private String name ="";
     
     public DeliverymanOrder() {
         initComponents();
@@ -33,8 +36,11 @@ public class DeliverymanOrder extends javax.swing.JInternalFrame {
     public DeliverymanOrder(String name) {
         initComponents();
         initializeList();
-        checkStatus();
+        this.name = name;
+        hardCode();
+        getOrder(name);
     }
+    
     
     private void initializeList() {
         try {
@@ -51,43 +57,32 @@ public class DeliverymanOrder extends javax.swing.JInternalFrame {
         
         // one more try for order details
     }
-
-    private void checkStatus(){
+    
+    private void hardCode(){
+        DeliveryOrder order1 = new DeliveryOrder("jian",1001);
+        DeliveryOrder order2 = new DeliveryOrder("keat",1002);
+        Order order3 = new Order(1001, "No delay", "KFC", 20.3, "0123456789", "Delivering", "22-11-2017", "22:55", null);
+        Order order4 = new Order(1002, "No delay", "MCD", 11.3, "0123456789", "Delivering", "28-11-2017", "14:55", null);
         
-       /* for(int i=0;i<DmListTxt.size();i++){
-            if(DmListTxt.get(i).getName().equals(name)){
-                switch (DmListTxt.get(i).getWorkingStatus()) {
-                    // check order status, if assigned, then able to confirm, if confirmed then able to done.
-                    
-                    case "unavailable":
-                    case "":
-                        BtnClockIn.setEnabled(true);
-                        BtnClockOut.setEnabled(false);
-                        BtnBreak.setEnabled(false);
-                       
-                        break;
-                    case "available":
-                        BtnClockIn.setEnabled(false);
-                        BtnClockOut.setEnabled(true);
-                        BtnBreak.setEnabled(true);
-                        break;
-                    case "break":
-                        BtnClockIn.setEnabled(false);
-                        BtnClockOut.setEnabled(true);
-                        BtnBreak.setEnabled(false);
-                        break;
-                    case "delivery":
-                        JOptionPane.showMessageDialog(null, "You are currently having a delivery. Please complete it before you could clock out.");
-                        BtnClockIn.setEnabled(false);
-                        BtnClockOut.setEnabled(false);
-                        BtnBreak.setEnabled(false);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }*/
+        orderList.add(order3);
+        orderList.add(order4);
+        deliveryList.add(order1);
+        deliveryList.add(order2);
     }
+    
+    private void getOrder(String name){
+        
+        for(int x=0; x < deliveryList.size();x++){
+            if(deliveryList.get(x).getMan().equals(name)){
+                for(int j = 0; j < orderList.size(); j++){
+                    if( deliveryList.get(x).getOrder()== orderList.get(j).getOrderId()){
+                        txtAreaOrderDetails.setText("Current Delivery Order Details" + "\n\nOrder ID: " + orderList.get(j).getOrderId() + "\nRemark: " + orderList.get(j).getRemark() + "\nTotal Price: " + orderList.get(j).getTotalPrice() + "\nCustomer Phone No: " + orderList.get(j).getCustomerTel());
+                    }
+                }
+            }       
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -101,6 +96,7 @@ public class DeliverymanOrder extends javax.swing.JInternalFrame {
         btnDone = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtAreaOrderDetails = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(454, 318));
         setMinimumSize(new java.awt.Dimension(454, 318));
@@ -120,15 +116,25 @@ public class DeliverymanOrder extends javax.swing.JInternalFrame {
         txtAreaOrderDetails.setEnabled(false);
         jScrollPane1.setViewportView(txtAreaOrderDetails);
 
+        jButton1.setText("Status");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnDone, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnDone, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -137,7 +143,8 @@ public class DeliverymanOrder extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnDone, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -161,12 +168,37 @@ public class DeliverymanOrder extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDoneActionPerformed
-        
+        for(int i=0; i<DmListTxt.size();i++){
+            if(DmListTxt.get(i).getName().equals(name)){
+                DmListTxt.get(i).setWorkingStatus("available");
+                
+                try {
+                    ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMen.dat"));
+                    ooStream.writeObject(DmListTxt);
+                    JOptionPane.showMessageDialog(null, "You have completed your delivery!", "Info", JOptionPane.INFORMATION_MESSAGE);
+                } catch (FileNotFoundException ex) {
+                    JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }   
+                
+                txtAreaOrderDetails.setText("Please wait for manager to assign new job");
+            }
+        }
     }//GEN-LAST:event_btnDoneActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        for(int i=0; i<DmListTxt.size();i++){
+            if(DmListTxt.get(i).getName().equals(name)){
+                JOptionPane.showMessageDialog(null, "Current Status: " + DmListTxt.get(i).getWorkingStatus());
+            }
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDone;
+    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea txtAreaOrderDetails;

@@ -8,8 +8,10 @@ package UI;
 import domain.DeliveryMen;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -22,22 +24,51 @@ import javax.swing.JOptionPane;
  */
 public class ManagerCheckStatus extends javax.swing.JInternalFrame {
 
+    private List<DeliveryMen> DmListTxt = new ArrayList<>();
     public Queue<DeliveryMen> DmQueueTxt = new ArrayBlockingQueue<>(50);
     public Queue<DeliveryMen> DmQueue = new ArrayBlockingQueue<>(50);
     private String details = "";
     private int count = 1;
     private DeliveryMen DM;
+    private String name = "";
     
     public ManagerCheckStatus() {
         initComponents();
+    }
+    
+    public ManagerCheckStatus(String name) {
+        initComponents();
+        this.name = name;
         initializeList();
         getDeliverymanStatus();
+        check();
+    }
+    
+    private void check(){
+        if(txtAreaDmDetails.getText().equals("")){
+            btnAssign.setEnabled(false);
+        }
+        else{
+            btnAssign.setEnabled(true);
+        }
     }
     
     private void initializeList() {        
         try {
           ObjectInputStream oiStream = new ObjectInputStream(new FileInputStream("DeliveryMenQueue.dat"));
           DmQueueTxt = (ArrayBlockingQueue) (oiStream.readObject());
+          oiStream.close();
+        } catch (FileNotFoundException ex) {
+          JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+          JOptionPane.showMessageDialog(null, "Cannot read from file", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+          JOptionPane.showMessageDialog(null, "Class not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        try {
+          ObjectInputStream oiStream = new ObjectInputStream(new FileInputStream("DeliveryMen.dat"));
+          DmListTxt = (ArrayList) (oiStream.readObject());
           oiStream.close();
         } catch (FileNotFoundException ex) {
           JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -70,13 +101,18 @@ public class ManagerCheckStatus extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btnAssign = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtAreaDmDetails = new javax.swing.JTextArea();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Deliverymans' Detail", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
 
-        jButton1.setText("Assign Delivery Order Job ");
+        btnAssign.setText("Assign Delivery Order Job ");
+        btnAssign.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAssignActionPerformed(evt);
+            }
+        });
 
         txtAreaDmDetails.setColumns(20);
         txtAreaDmDetails.setRows(5);
@@ -89,7 +125,7 @@ public class ManagerCheckStatus extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
+                .addComponent(btnAssign, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
                 .addContainerGap())
             .addComponent(jScrollPane1)
         );
@@ -98,7 +134,7 @@ public class ManagerCheckStatus extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
+                .addComponent(btnAssign, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -122,9 +158,28 @@ public class ManagerCheckStatus extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAssignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAssignActionPerformed
+        for(int i=0; i<DmListTxt.size();i++){
+            if(DmListTxt.get(i).getName().equals(name)){
+                
+                DmListTxt.get(i).setWorkingStatus("delivering");
+                try {
+                        ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMen.dat"));
+                        ooStream.writeObject(DmListTxt);
+                        JOptionPane.showMessageDialog(null, "Successfully assigned job to " + name , "Info", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (FileNotFoundException ex) {
+                        JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    }    
+            }
+        }
+        getDeliverymanStatus();
+    }//GEN-LAST:event_btnAssignActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnAssign;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea txtAreaDmDetails;

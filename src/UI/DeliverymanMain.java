@@ -158,7 +158,7 @@ public class DeliverymanMain extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCheckOrderActionPerformed
 
     private void btnCheckDeliveryManActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckDeliveryManActionPerformed
-        ManagerCheckStatus inner = new ManagerCheckStatus();
+        ManagerCheckStatus inner = new ManagerCheckStatus(name);
         Dimension desktopSize = main.getSize();
         Dimension jInternalFrameSize = inner.getSize();
         jdpWindow.add(inner); 

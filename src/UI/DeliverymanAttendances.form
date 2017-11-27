@@ -57,15 +57,22 @@
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="lblDate" alignment="0" max="32767" attributes="0"/>
                               <Component id="lblClock" alignment="0" max="32767" attributes="0"/>
-                              <Component id="jLabel1" alignment="1" max="32767" attributes="0"/>
                               <Component id="lblInfo" alignment="0" max="32767" attributes="0"/>
                               <Component id="jLabel2" alignment="1" max="32767" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="BtnBreak" min="-2" pref="99" max="-2" attributes="0"/>
+                                  <Component id="BtnWork" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="BtnClockOut" min="-2" pref="99" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="BtnClockIn" min="-2" pref="100" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="1" attributes="0">
+                                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                          <Component id="BtnBreak" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="BtnClockOut" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                                          <Component id="BtnClockIn" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="jLabel1" max="32767" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -90,13 +97,16 @@
                   <Component id="jLabel1" min="-2" pref="41" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="BtnBreak" alignment="0" pref="32" max="32767" attributes="0"/>
-                      <Component id="BtnClockOut" alignment="0" max="32767" attributes="0"/>
-                      <Component id="BtnClockIn" alignment="0" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="BtnClockIn" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
+                          <Component id="BtnClockOut" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
+                      </Group>
+                      <Component id="BtnBreak" alignment="1" max="32767" attributes="0"/>
+                      <Component id="BtnWork" alignment="1" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="lblTotal" min="-2" pref="44" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="35" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -172,6 +182,14 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Total Time:"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="BtnWork">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Work"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BtnWorkActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

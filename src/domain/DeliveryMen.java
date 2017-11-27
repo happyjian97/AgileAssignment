@@ -44,6 +44,9 @@ public class DeliveryMen implements Serializable {
         this.userName = userName;
         this.password = password;
     }
+
+    public DeliveryMen() {
+    }
     //get
     public String getName(){
         return name;
