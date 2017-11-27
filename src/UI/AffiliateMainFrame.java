@@ -1,5 +1,9 @@
 package UI;
 
+import Interface.ACMListInterface;
+import adt.ACMList;
+import domain.Affiliate;
+import domain.Menu;
 import java.awt.Color;
 
 /**
@@ -8,12 +12,17 @@ import java.awt.Color;
  */
 public class AffiliateMainFrame extends javax.swing.JFrame {
 
+    //Global data
+    //List element
+    public ACMListInterface<Affiliate> AffiliateListMainFrame = new ACMList<>();
+    public ACMListInterface<Menu> MenuListMainFrame = new ACMList<>();
+    
     public AffiliateMainFrame() {
-        /*
-        JPanelFrame Jp1 = new JPanelFrame();
-        jdpWindow.add(Jp1);
-        Jp1.show();
-        */
+        initComponents();
+    }
+    
+    //overload constructor
+    public AffiliateMainFrame(ACMListInterface<Affiliate> AffiliateListLogin,ACMListInterface<Menu> MenuListMngMenu) {
         initComponents();
         jtfBannerUsrName.setText(AffiliateLoginForm.TUsrname);
         jtfBannerRestName.setText(AffiliateLoginForm.TRestName);
@@ -25,6 +34,9 @@ public class AffiliateMainFrame extends javax.swing.JFrame {
         jtfBannerRestName.setForeground(Color.gray);
         jtfBannerAccType.setEditable(false);
         jtfBannerAccType.setForeground(Color.gray);
+        //Receive
+        AffiliateListMainFrame = AffiliateListLogin;
+        MenuListMainFrame = MenuListMngMenu;
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -33,6 +45,8 @@ public class AffiliateMainFrame extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         jdpWindow = new javax.swing.JDesktopPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
         jButton2 = new javax.swing.JButton();
@@ -64,15 +78,27 @@ public class AffiliateMainFrame extends javax.swing.JFrame {
 
         jdpWindow.setPreferredSize(new java.awt.Dimension(723, 530));
 
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        jdpWindow.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
         javax.swing.GroupLayout jdpWindowLayout = new javax.swing.GroupLayout(jdpWindow);
         jdpWindow.setLayout(jdpWindowLayout);
         jdpWindowLayout.setHorizontalGroup(
             jdpWindowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 717, Short.MAX_VALUE)
+            .addGroup(jdpWindowLayout.createSequentialGroup()
+                .addGap(169, 169, 169)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(385, Short.MAX_VALUE))
         );
         jdpWindowLayout.setVerticalGroup(
             jdpWindowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 530, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jdpWindowLayout.createSequentialGroup()
+                .addContainerGap(385, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(62, 62, 62))
         );
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/logo.png"))); // NOI18N
@@ -81,6 +107,11 @@ public class AffiliateMainFrame extends javax.swing.JFrame {
         jSeparator3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jButton2.setText("Profile");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jbtLogOut.setText("Logout");
         jbtLogOut.addActionListener(new java.awt.event.ActionListener() {
@@ -98,14 +129,34 @@ public class AffiliateMainFrame extends javax.swing.JFrame {
         jLabel5.setText("Maintain Menu");
 
         jButton1.setText("View Menu");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("Manage Menu");
+        jButton3.setText("Add Menu");
         jButton3.setToolTipText("Add and Update Menu");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Manage Priority");
         jButton4.setToolTipText("Set Menu to view first");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
-        jButton5.setText("Remove Menu");
+        jButton5.setText("Manage Menu");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("Maintain Promotion");
 
@@ -149,11 +200,10 @@ public class AffiliateMainFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel5)
                     .addComponent(jLabel6)
                     .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -222,18 +272,52 @@ public class AffiliateMainFrame extends javax.swing.JFrame {
 
     private void jbtLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtLogOutActionPerformed
         // Logout Button:
-        AffiliateLoginForm AfLoginFrame = new AffiliateLoginForm();
+        AffiliateLoginForm AfLoginFrame = new AffiliateLoginForm(AffiliateListMainFrame,MenuListMainFrame);
         AfLoginFrame.setVisible(true);
         dispose();
     }//GEN-LAST:event_jbtLogOutActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // Manage Priority
+        
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // Manage Menu Button
+        AffiliateAddMenu Jp1 = new AffiliateAddMenu(AffiliateListMainFrame,MenuListMainFrame);
+        jdpWindow.add(Jp1);
+        Jp1.show();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // View Menu
+        
+        AffiliateViewMenu Jp2 = new AffiliateViewMenu(MenuListMainFrame);
+        jdpWindow.add(Jp2);
+        Jp2.show();
+        
+        /*if(MenuListMainFrame.isEmpty()){
+            jTextArea1.setText("Empty");
+        }
+        else
+        jTextArea1.setText(MenuListMainFrame+"");
+         //jTextArea1.setText(AffiliateListMainFrame+"");*/
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // Manage Menu
+        AffiliateMngMenu Jp3 = new AffiliateMngMenu(AffiliateListMainFrame,MenuListMainFrame);
+        jdpWindow.add(Jp3);
+        Jp3.show();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // Profile Button
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -280,9 +364,11 @@ public class AffiliateMainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JButton jbtLogOut;
     private javax.swing.JDesktopPane jdpWindow;
     private javax.swing.JTextField jtfBannerAccType;
