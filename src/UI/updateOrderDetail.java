@@ -1,0 +1,375 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package UI;
+
+import domain.Menu;
+import domain.Order;
+import domain.OrderedMenu;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ *
+ * @author Liew
+ */
+public class updateOrderDetail extends javax.swing.JInternalFrame {
+    Order order = new Order();
+    private List<Order> orderList = new ArrayList<>();
+    private List<OrderedMenu> menuList = new ArrayList<>();
+    private List<OrderedMenu> matchedMenuList = new ArrayList<>();
+
+    /**
+     * Creates new form updateOrderDe
+     */
+    public updateOrderDetail() {
+        initComponents();
+    }
+
+    updateOrderDetail(Order selectedOrder) {
+        initComponents();
+        order = selectedOrder;
+        jtaRemark.setText(order.getRemark());
+        initiateMenuList();
+        compareOrderId();
+        initiaTable();
+        initiateOrderList();
+
+        setPriceValue();
+    }
+    
+    private void initiateMenuList(){
+        try {
+            ObjectInputStream oiStream = new ObjectInputStream(new FileInputStream("OrderedMenu.dat"));
+            menuList = (ArrayList) (oiStream.readObject());
+            oiStream.close();
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Cannot read from file", "ERROR", JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, "Class not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+            }    
+    }
+    
+    private void compareOrderId(){
+        for(int i=0; i<menuList.size(); i++){
+            if(order.getOrderId() == menuList.get(i).getOrderId()){
+                matchedMenuList.add(menuList.get(i));
+                
+            }
+        }
+    }
+    
+    private void initiaTable(){
+        DefaultTableModel model = (DefaultTableModel) jtbOrder.getModel();
+        Object rowData[] = new Object[2];
+        for(int i=0; i<matchedMenuList.size(); i++){
+            rowData[0] = matchedMenuList.get(i).getMenuName();
+            rowData[1] = matchedMenuList.get(i).getQuantity();
+            model.addRow(rowData);
+        }
+    }
+    
+    private void initiateOrderList(){
+        try {
+            ObjectInputStream oiStream = new ObjectInputStream(new FileInputStream("Order.dat"));
+            orderList = (ArrayList) (oiStream.readObject());
+            oiStream.close();
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Cannot read from file", "ERROR", JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, "Class not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+            }    
+    }
+    
+    private void UpdateOrderList(){
+        
+        for(int i=0; i<orderList.size(); i++){
+
+            if(orderList.get(i).getOrderId()==order.getOrderId()){
+                orderList.get(i).setRemark(jtaRemark.getText());
+                orderList.get(i).setPrice(order.getPrice());
+                orderList.get(i).setTotalPrice(order.getTotalPrice());
+            }
+        }
+    }
+    
+    public void addOrderRecord(){
+        try {
+            ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("Order.dat"));
+            ooStream.writeObject(orderList);
+            ooStream.close();
+            
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+    }
+    
+
+    
+    private void setPriceValue(){
+        jtfPrice.setText(String.format("%.2f", order.getPrice()));
+        jtfDeliveryFee.setText(String.format("%.2f", order.getDeliveryFee()));
+        jtfTotalPrice.setText(String.format("%.2f", order.getTotalPrice()));
+    }
+ 
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jTextField1 = new javax.swing.JTextField();
+        lblTitle = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jtbOrder = new javax.swing.JTable();
+        btnRemove = new javax.swing.JButton();
+        lblRemark = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jtaRemark = new javax.swing.JTextArea();
+        btnUpdate = new javax.swing.JButton();
+        lblPrice = new javax.swing.JLabel();
+        lblDeliveryFee = new javax.swing.JLabel();
+        lblTotalPrice = new javax.swing.JLabel();
+        jtfPrice = new javax.swing.JTextField();
+        jtfDeliveryFee = new javax.swing.JTextField();
+        jtfTotalPrice = new javax.swing.JTextField();
+
+        jTextField1.setText("jTextField1");
+
+        setClosable(true);
+
+        lblTitle.setFont(new java.awt.Font("Vivaldi", 1, 24)); // NOI18N
+        lblTitle.setText("Update Order");
+
+        jtbOrder.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Selected Menu", "Quantity"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(jtbOrder);
+
+        btnRemove.setText("Remove");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
+
+        lblRemark.setText("Remark : ");
+
+        jtaRemark.setColumns(20);
+        jtaRemark.setRows(5);
+        jScrollPane2.setViewportView(jtaRemark);
+
+        btnUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/thumb.png"))); // NOI18N
+        btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+
+        lblPrice.setText("Total Price : ");
+
+        lblDeliveryFee.setText("Delivery Fee : ");
+
+        lblTotalPrice.setText("Total Price (include delivery fee) : ");
+
+        jtfPrice.setEnabled(false);
+
+        jtfDeliveryFee.setEnabled(false);
+        jtfDeliveryFee.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jtfDeliveryFeeActionPerformed(evt);
+            }
+        });
+
+        jtfTotalPrice.setEnabled(false);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblTitle)
+                            .addComponent(lblRemark)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addGap(28, 28, 28)
+                                .addComponent(btnRemove))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(lblTotalPrice)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(lblPrice)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jtfPrice)
+                                        .addGap(25, 25, 25)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jtfTotalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblDeliveryFee)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jtfDeliveryFee, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnUpdate)))
+                .addContainerGap(32, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblTitle)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(58, 58, 58)
+                        .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblRemark)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPrice)
+                    .addComponent(jtfPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblDeliveryFee)
+                            .addComponent(jtfDeliveryFee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblTotalPrice)
+                            .addComponent(jtfTotalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(21, 21, 21))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        int index = jtbOrder.getSelectedRow();
+        OrderedMenu tempOrderMenu = matchedMenuList.get(index);
+        int stoper =0;
+        
+        for(int i=0; i< menuList.size() && stoper==0 ; i++){
+            if(menuList.get(i).getOrderId()==tempOrderMenu.getOrderId() && 
+               menuList.get(i).getMenuId()==tempOrderMenu.getMenuId() && 
+               menuList.get(i).getQuantity()==tempOrderMenu.getQuantity()){
+
+
+                order.setTotalPrice(order.getTotalPrice()-menuList.get(i).getTotalPrice());
+                order.setPrice(order.getPrice()-menuList.get(i).getTotalPrice());
+
+                
+                
+                
+                menuList.remove(i);
+                matchedMenuList.remove(index);
+                stoper = 1;
+            }
+        }
+        
+        
+        DefaultTableModel dm = (DefaultTableModel) jtbOrder.getModel();
+        int rowCount = dm.getRowCount();
+        for (int i = rowCount - 1; i >= 0; i--) {
+        dm.removeRow(i);
+        }
+        
+        
+        setPriceValue();
+        initiaTable();
+        
+        
+    }//GEN-LAST:event_btnRemoveActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        try {
+            ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("OrderedMenu.dat"));
+            ooStream.writeObject(menuList);
+            ooStream.close();
+            
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+        
+        UpdateOrderList();
+        addOrderRecord();
+        this.dispose();
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void jtfDeliveryFeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtfDeliveryFeeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jtfDeliveryFeeActionPerformed
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnRemove;
+    private javax.swing.JButton btnUpdate;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextArea jtaRemark;
+    private javax.swing.JTable jtbOrder;
+    private javax.swing.JTextField jtfDeliveryFee;
+    private javax.swing.JTextField jtfPrice;
+    private javax.swing.JTextField jtfTotalPrice;
+    private javax.swing.JLabel lblDeliveryFee;
+    private javax.swing.JLabel lblPrice;
+    private javax.swing.JLabel lblRemark;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblTotalPrice;
+    // End of variables declaration//GEN-END:variables
+}
