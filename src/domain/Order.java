@@ -17,6 +17,8 @@ public class Order implements Serializable {
     private int orderId;
     private String remark;
     private String restaurant;
+    private double deliveryFee;
+    private double Price;
     private double totalPrice;
     private String customerTel;
     private String status;
@@ -79,6 +81,34 @@ public class Order implements Serializable {
     public void setDeliveredTime(String deliveredTime){
         this.deliveredTime = deliveredTime;
     }
+
+    public static void setNumber(int number) {
+        Order.number = number;
+    }
+
+    public void setDeliveryFee(double deliveryFee) {
+        this.deliveryFee = deliveryFee;
+    }
+
+    public void setPrice(double Price) {
+        this.Price = Price;
+    }
+    
+    
+
+    public static int getNumber() {
+        return number;
+    }
+
+    public double getDeliveryFee() {
+        return deliveryFee;
+    }
+
+    public double getPrice() {
+        return Price;
+    }
+    
+    
     
     public String getRemark(){
         return remark;
