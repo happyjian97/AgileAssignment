@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 import javax.swing.JOptionPane;
 
 /**
@@ -20,7 +22,7 @@ import javax.swing.JOptionPane;
  */
 public class DeliveryManLogin extends javax.swing.JFrame {
 
-    List<DeliveryMen> DmList = new ArrayList<>();
+    public List<DeliveryMen> DmList = new ArrayList<>();
     public String DmLogin;
     
     public DeliveryManLogin() {
@@ -156,7 +158,6 @@ public class DeliveryManLogin extends javax.swing.JFrame {
                     Jp1.setVisible(true);
                     dispose();
                     status = true;
-
                 }
             }
             if(status == false){

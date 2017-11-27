@@ -20,6 +20,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -31,9 +33,14 @@ import javax.swing.JOptionPane;
 public class DeliverymanAttendances extends javax.swing.JInternalFrame {
 
     private List<DeliveryMen> DmListTxt = new ArrayList<>();
+    public Queue<DeliveryMen> DmQueueTxt = new ArrayBlockingQueue<>(50);
+    public Queue<DeliveryMen> DmQueue = new ArrayBlockingQueue<>(50);
     public String name;
     private String message;
     private boolean check=false;
+    private int count = 0;
+    private DeliveryMen temp;
+    
     
     public DeliverymanAttendances() {
         initComponents();
@@ -56,6 +63,18 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
         try {
           ObjectInputStream oiStream = new ObjectInputStream(new FileInputStream("DeliveryMen.dat"));
           DmListTxt = (ArrayList) (oiStream.readObject());
+          oiStream.close();
+        } catch (FileNotFoundException ex) {
+          JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+          JOptionPane.showMessageDialog(null, "Cannot read from file", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+          JOptionPane.showMessageDialog(null, "Class not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        try {
+          ObjectInputStream oiStream = new ObjectInputStream(new FileInputStream("DeliveryMenQueue.dat"));
+          DmQueueTxt = (ArrayBlockingQueue) (oiStream.readObject());
           oiStream.close();
         } catch (FileNotFoundException ex) {
           JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -99,9 +118,17 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
                 switch (DmListTxt.get(i).getWorkingStatus()) {
                     case "unavailable":
                     case "":
-                        BtnClockIn.setEnabled(true);
-                        BtnClockOut.setEnabled(false);
-                        BtnBreak.setEnabled(false);
+                        if(count==0){
+                            BtnClockIn.setEnabled(true);
+                            BtnClockOut.setEnabled(false);
+                            BtnBreak.setEnabled(false);
+                        }
+                        else{
+                            BtnClockIn.setEnabled(false);
+                            BtnClockOut.setEnabled(false);
+                            BtnBreak.setEnabled(false);
+                            //JOptionPane.showMessageDialog(null, "Come back again tomorrow.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                        }
                         break;
                     case "available":
                         BtnClockIn.setEnabled(false);
@@ -224,20 +251,23 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblClock, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTotal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(BtnBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(BtnClockOut, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(BtnClockIn, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(lblTotal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lblDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblClock, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(BtnBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(BtnClockOut, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(BtnClockIn, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -259,14 +289,16 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
                     .addComponent(BtnClockIn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -287,18 +319,37 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
             if(DmListTxt.get(i).getName().equals(name)){
                 DmListTxt.get(i).setClockIn(time);
                 DmListTxt.get(i).setWorkingStatus("available");
+                count++;
 
                 try {
                     ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMen.dat"));
                     ooStream.writeObject(DmListTxt);
-                    JOptionPane.showMessageDialog(null, "Successfully Signed in for work!", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Successfully Signed in for work!", "Info", JOptionPane.INFORMATION_MESSAGE);
                 } catch (FileNotFoundException ex) {
                     JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }             
+                
+                for(int j=0; j < DmQueueTxt.size();j++){
+                    temp = DmQueueTxt.remove();
+                    if(!temp.getName().equals(DmListTxt.get(i).getName())){
+                        DmQueue.add(temp);
+                    }
                 }
+                DmQueue.add(DmListTxt.get(i));
+                
+                try {
+                        ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMenQueue.dat"));
+                        ooStream.writeObject(DmQueue);
+                    } catch (FileNotFoundException ex) {
+                        JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    }
             }
         }
+
         lblTotal.setVisible(false);
         checkStatus();
     }//GEN-LAST:event_BtnClockInActionPerformed
@@ -310,18 +361,40 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
 
         for(int i=0; i<DmListTxt.size();i++){
             if(DmListTxt.get(i).getName().equals(name)){
-                DmListTxt.get(i).setClockOut(time);
-                DmListTxt.get(i).setWorkingStatus("unavailable");
+                int dialogResult = JOptionPane.showConfirmDialog (null, "Would You Like to Clock Out for Today's Work?","Warning",JOptionPane.YES_NO_OPTION);
+                if(dialogResult == JOptionPane.YES_OPTION){
+                    DmListTxt.get(i).setClockOut(time);
+                    DmListTxt.get(i).setWorkingStatus("unavailable");
 
-                try {
-                    ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMen.dat"));
-                    ooStream.writeObject(DmListTxt);
-                    JOptionPane.showMessageDialog(null, "Successfully Signed out from work! \nHave a nice day!", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-                } catch (FileNotFoundException ex) {
-                    JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    try {
+                        ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMen.dat"));
+                        ooStream.writeObject(DmListTxt);
+                        JOptionPane.showMessageDialog(null, "Successfully Signed out from work! \nHave a nice day!", "Info", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (FileNotFoundException ex) {
+                        JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
+                else{
+                    JOptionPane.showMessageDialog(null, "Please come back later, when you like to clock out for the day.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                }
+                
+                for(int j=0; j <= DmQueueTxt.size();j++){
+                    temp = DmQueueTxt.remove();
+                    if(!temp.getName().equals(DmListTxt.get(i).getName())){
+                        DmQueue.add(temp);
+                    }
+                }
+                
+                try {
+                        ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMenQueue.dat"));
+                        ooStream.writeObject(DmQueue);
+                    } catch (FileNotFoundException ex) {
+                        JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    }
             }
         }
         calculateTotalTime();
@@ -336,7 +409,7 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
                 try {
                     ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMen.dat"));
                     ooStream.writeObject(DmListTxt);
-                    JOptionPane.showMessageDialog(null, "Please take a rest.", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Please take a rest.", "Info", JOptionPane.INFORMATION_MESSAGE);
                 } catch (FileNotFoundException ex) {
                     JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
                 } catch (IOException ex) {
