@@ -1,69 +1,109 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package domain;
+
+import java.text.DecimalFormat;
 
 /**
  *
- * @author Liew
+ * @author Tan Eu Tim
  */
 public class Menu {
-    private static int number = 1000;
-    private int menuId;
-    private String restaurantName;
-    private String menuName;
-    private double price;
+    private static int nextNumber = 1000;
+    private int number;
+    private String MenuName;
+    private String MenuDesc;
+    private double MenuPrice;
+    private int MenuRank;
+    private String MenuStatus;
+    private String PromotionType;
+    private String RestaurantName;
 
+    public Menu(String MenuName,String MenuDesc,double MenuPrice,int MenuRank,String MenuStatus,String PromotionType,String RestaurantName) {
+        this.MenuName = MenuName;
+        this.number = nextNumber++;
+        this.MenuDesc = MenuDesc;
+        this.MenuPrice = MenuPrice;
+        this.MenuRank = MenuRank;
+        this.MenuStatus = MenuStatus;
+        this.PromotionType = PromotionType;
+        this.RestaurantName = RestaurantName;
+  }
     
-    public Menu(String restaurantName, String menuName, double price) {
-        this.restaurantName = restaurantName;
-        this.menuName = menuName;
-        this.price = price;
-        menuId = ++number;
+    public static int getNextNumber() {
+        return nextNumber;
     }
-    
-    
 
-    public void Menu() {
+    public static void setNextNumber(int nextNumber) {
+        Menu.nextNumber = nextNumber;
     }
 
-    
-    public int getMenuId() {
-        return menuId;
+    public int getNumber() {
+        return number;
     }
 
-    public String getRestaurantName() {
-        return restaurantName;
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public String getMenuName() {
-        return menuName;
+        return MenuName;
     }
 
-    public double getPrice() {
-        return price;
-    }
-    
-    public void setMenuId(int menuId) {
-        this.menuId = menuId;
+    public void setMenuName(String MenuName) {
+        this.MenuName = MenuName;
     }
 
-    public void setRestaurantName(String restaurantName) {
-        this.restaurantName = restaurantName;
+    public String getMenuDesc() {
+        return MenuDesc;
     }
 
-    public void setMenuName(String menuName) {
-        this.menuName = menuName;
+    public void setMenuDesc(String MenuDesc) {
+        this.MenuDesc = MenuDesc;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public double getMenuPrice() {
+        return MenuPrice;
+    }
+
+    public void setMenuPrice(double MenuPrice) {
+        this.MenuPrice = MenuPrice;
+    }
+
+    public int getMenuRank() {
+        return MenuRank;
+    }
+
+    public void setMenuRank(int MenuRank) {
+        this.MenuRank = MenuRank;
+    }
+
+    public String getMenuStatus() {
+        return MenuStatus;
+    }
+
+    public void setMenuStatus(String MenuStatus) {
+        this.MenuStatus = MenuStatus;
+    }
+
+    public String getPromotionType() {
+        return PromotionType;
+    }
+
+    public void setPromotionType(String PromotionType) {
+        this.PromotionType = PromotionType;
+    }
+
+    public String getRestaurantName() {
+        return RestaurantName;
+    }
+
+    public void setRestaurantName(String RestaurantName) {
+        this.RestaurantName = RestaurantName;
     }
     
-    
-    
-    
+    @Override
+  public String toString() {
+     DecimalFormat df = new DecimalFormat("#.00");
+    return String.format("%-10d %-15s %-25s %-15s %-10d %-15s %-10s %-15s", number, MenuName,MenuDesc,df.format(MenuPrice),MenuRank,MenuStatus,PromotionType,RestaurantName);
+  }
     
 }
