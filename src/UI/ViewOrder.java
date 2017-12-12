@@ -78,6 +78,7 @@ public class ViewOrder extends javax.swing.JInternalFrame {
         jtaShowOrder = new javax.swing.JTextArea();
         lblOrder = new javax.swing.JLabel();
         lblLegend = new javax.swing.JLabel();
+        lblTitle = new javax.swing.JLabel();
 
         setClosable(true);
 
@@ -91,31 +92,42 @@ public class ViewOrder extends javax.swing.JInternalFrame {
 
         lblLegend.setText("Order ID                Order Date                             Order Time");
 
+        lblTitle.setFont(new java.awt.Font("Vivaldi", 1, 24)); // NOI18N
+        lblTitle.setText("View Order");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblOrder)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblOrder)
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addComponent(lblLegend))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(lblTitle)))
+                        .addGap(0, 193, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(lblLegend)
-                .addContainerGap(205, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(35, 35, 35)
+                .addComponent(lblTitle)
+                .addGap(4, 4, 4)
                 .addComponent(lblOrder)
                 .addGap(18, 18, 18)
                 .addComponent(lblLegend)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -129,5 +141,6 @@ public class ViewOrder extends javax.swing.JInternalFrame {
     private javax.swing.JTextArea jtaShowOrder;
     private javax.swing.JLabel lblLegend;
     private javax.swing.JLabel lblOrder;
+    private javax.swing.JLabel lblTitle;
     // End of variables declaration//GEN-END:variables
 }
