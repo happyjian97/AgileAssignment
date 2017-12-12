@@ -257,7 +257,7 @@ public class addOrder extends javax.swing.JInternalFrame {
         for(int i=0; i<getMenuList.size(); i++){
             if(getMenuList.get(i).getMenuName().equals(ddlMenu.getSelectedItem().toString())
                     && getMenuList.get(i).getRestaurantName().equals(Restaurant.getText())){
-                retrievedMenuId = getMenuList.get(i).getMenuId();
+                retrievedMenuId = getMenuList.get(i).getNumber();
                 newMenu.setMenuId(retrievedMenuId);
                 newMenu.setMenuName(getMenuList.get(i).getMenuName());
             }
@@ -274,7 +274,7 @@ public class addOrder extends javax.swing.JInternalFrame {
             previousText = jtaSelectedMenu.getText();
             
             for(int j=0; j<getMenuList.size(); j++){
-                if(getMenuList.get(j).getMenuId()==menuList.get(i).getMenuId())
+                if(getMenuList.get(j).getNumber()==menuList.get(i).getMenuId())
                     getMenuName = getMenuList.get(j).getMenuName();
             }
             
@@ -296,8 +296,8 @@ public class addOrder extends javax.swing.JInternalFrame {
         
         for(int i=0; i<menuList.size(); i++){
             for(int j=0; j<getMenuList.size(); j++){
-                if(menuList.get(i).getMenuId() == getMenuList.get(j).getMenuId())
-                    TotalPrice = getMenuList.get(j).getPrice() * menuList.get(i).getQuantity();
+                if(menuList.get(i).getMenuId() == getMenuList.get(j).getNumber())
+                    TotalPrice = getMenuList.get(j).getMenuPrice() * menuList.get(i).getQuantity();
             }
         }
         return TotalPrice;

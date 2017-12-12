@@ -27,6 +27,12 @@ public class Menu {
         this.PromotionType = PromotionType;
         this.RestaurantName = RestaurantName;
   }
+    public Menu(String MenuName,String MenuDesc,double MenuPrice) {
+        this.MenuName = MenuName;
+        this.number = nextNumber++;
+        this.MenuDesc = MenuDesc;
+        this.MenuPrice = MenuPrice;
+  }
     
     public static int getNextNumber() {
         return nextNumber;
