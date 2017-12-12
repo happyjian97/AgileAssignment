@@ -5,8 +5,8 @@
  */
 package UI;
 
+import domain.AssignedJob;
 import domain.DeliveryMen;
-import domain.DeliveryOrder;
 import domain.Order;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,6 +16,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 import javax.swing.JOptionPane;
 
 /**
@@ -26,8 +28,12 @@ public class DeliverymanOrder extends javax.swing.JInternalFrame {
 
     private List<DeliveryMen> DmListTxt = new ArrayList<>();
     private List<Order> orderList = new ArrayList<>();
-    private List<DeliveryOrder> deliveryList = new ArrayList<>();
+    private List<AssignedJob> jobList = new ArrayList<>();
+    public Queue<DeliveryMen> DmQueueTxt = new ArrayBlockingQueue<>(50);
+    public Queue<DeliveryMen> newQueue = new ArrayBlockingQueue<>(50);
     private String name ="";
+    private DeliveryMen temp;
+    private int orderID = 0;
     
     public DeliverymanOrder() {
         initComponents();
@@ -37,12 +43,23 @@ public class DeliverymanOrder extends javax.swing.JInternalFrame {
         initComponents();
         initializeList();
         this.name = name;
-        hardCode();
         getOrder(name);
     }
     
     
     private void initializeList() {
+        try {
+          ObjectInputStream oiStream = new ObjectInputStream(new FileInputStream("DeliveryMenQueue.dat"));
+          DmQueueTxt = (ArrayBlockingQueue) (oiStream.readObject());
+          oiStream.close();
+        } catch (FileNotFoundException ex) {
+          JOptionPane.showMessageDialog(null, "DmQueue not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+          JOptionPane.showMessageDialog(null, "Cannot read from queue file", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+          JOptionPane.showMessageDialog(null, "Class not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+        
         try {
           ObjectInputStream oiStream = new ObjectInputStream(new FileInputStream("DeliveryMen.dat"));
           DmListTxt = (ArrayList) (oiStream.readObject());
@@ -55,28 +72,44 @@ public class DeliverymanOrder extends javax.swing.JInternalFrame {
           JOptionPane.showMessageDialog(null, "Class not found", "ERROR", JOptionPane.ERROR_MESSAGE);
         }
         
-        // one more try for order details
-    }
-    
-    private void hardCode(){
-        DeliveryOrder order1 = new DeliveryOrder("jian",1001);
-        DeliveryOrder order2 = new DeliveryOrder("keat",1002);
-        Order order3 = new Order(1001, "No delay", "KFC", 20.3, "0123456789", "Delivering", "22-11-2017", "22:55", null);
-        Order order4 = new Order(1002, "No delay", "MCD", 11.3, "0123456789", "Delivering", "28-11-2017", "14:55", null);
+        try {
+          ObjectInputStream oiStream = new ObjectInputStream(new FileInputStream("OrderList.dat"));
+          orderList = (ArrayList) (oiStream.readObject());
+          oiStream.close();
+        } catch (FileNotFoundException ex) {
+          JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+          JOptionPane.showMessageDialog(null, "Cannot read from file", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+          JOptionPane.showMessageDialog(null, "Class not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
         
-        orderList.add(order3);
-        orderList.add(order4);
-        deliveryList.add(order1);
-        deliveryList.add(order2);
+        try {
+          ObjectInputStream oiStream = new ObjectInputStream(new FileInputStream("AssignedJob.dat"));
+          jobList = (ArrayList) (oiStream.readObject());
+          oiStream.close();
+        } catch (FileNotFoundException ex) {
+          JOptionPane.showMessageDialog(null, "Order List not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+          JOptionPane.showMessageDialog(null, "Cannot read from order file", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+          JOptionPane.showMessageDialog(null, "Class not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        // one more try for order details
     }
     
     private void getOrder(String name){
         
-        for(int x=0; x < deliveryList.size();x++){
-            if(deliveryList.get(x).getMan().equals(name)){
+        for(int i=0; i < jobList.size();i++){
+            if(jobList.get(i).getDmName().equals(name)){
                 for(int j = 0; j < orderList.size(); j++){
-                    if( deliveryList.get(x).getOrder()== orderList.get(j).getOrderId()){
-                        txtAreaOrderDetails.setText("Current Delivery Order Details" + "\n\nOrder ID: " + orderList.get(j).getOrderId() + "\nRemark: " + orderList.get(j).getRemark() + "\nTotal Price: " + orderList.get(j).getTotalPrice() + "\nCustomer Phone No: " + orderList.get(j).getCustomerTel());
+                    if( jobList.get(i).getOrderID() == orderList.get(j).getOrderId() && orderList.get(j).getStatus().equals("Assigned")){
+                        orderID = orderList.get(j).getOrderId();
+                        txtAreaOrderDetails.setText("Current Delivery Order Details" + "\n\nOrder ID: " + orderList.get(j).getOrderId() + "\nRemark: " + orderList.get(j).getRemark() + "\nTotal Price: " + orderList.get(j).getTotalPrice() + "\nCustomer Phone No: " + orderList.get(j).getCustomerTel() + "\n" + orderList.get(j).getStatus());
+                    }
+                    else if(jobList.get(i).getOrderID() == orderList.get(j).getOrderId() && orderList.get(j).getStatus().equals("Done")){
+                        txtAreaOrderDetails.setText("Please wait for manager to assign new job");
                     }
                 }
             }       
@@ -98,6 +131,8 @@ public class DeliverymanOrder extends javax.swing.JInternalFrame {
         txtAreaOrderDetails = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
 
+        setClosable(true);
+        setMaximizable(true);
         setMaximumSize(new java.awt.Dimension(454, 318));
         setMinimumSize(new java.awt.Dimension(454, 318));
 
@@ -183,7 +218,34 @@ public class DeliverymanOrder extends javax.swing.JInternalFrame {
                 }   
                 
                 txtAreaOrderDetails.setText("Please wait for manager to assign new job");
-            }
+                newQueue.add(DmListTxt.get(i));
+                
+                for(int j=0; j<orderList.size();j++){
+                    if( orderID == orderList.get(j).getOrderId()){
+                        orderList.get(j).setStatus("Done");
+
+                    try {
+                        ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("OrderList.dat"));
+                        ooStream.writeObject(orderList);
+                    } catch (FileNotFoundException ex) {
+                        JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    }
+                    }
+                }
+                
+            }  
+                try {
+                        ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMenQueue.dat"));
+                        ooStream.writeObject(newQueue);
+                    } catch (FileNotFoundException ex) {
+                        JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    }
+                
+                
         }
     }//GEN-LAST:event_btnDoneActionPerformed
 

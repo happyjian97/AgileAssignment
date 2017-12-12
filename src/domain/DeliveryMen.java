@@ -156,6 +156,6 @@ public class DeliveryMen implements Serializable {
   public String toString() {
     return String.format(" %-20s %-20s %-20s %-20s %-20s %-20s %-20s %-20s %-20s %-20s %-20s %-20s\n", name, ic, contactNo, address, type, status, clockIn, clockOut, totalWorking, workingStatus, userName, password);
   }
-    
+   
 }
 

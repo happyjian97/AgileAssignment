@@ -35,6 +35,7 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
     private List<DeliveryMen> DmListTxt = new ArrayList<>();
     public Queue<DeliveryMen> DmQueueTxt = new ArrayBlockingQueue<>(50);
     public Queue<DeliveryMen> DmQueue = new ArrayBlockingQueue<>(50);
+    public Queue<DeliveryMen> newQueue = new ArrayBlockingQueue<>(50);
     public String name;
     private String message;
     private boolean check=false;
@@ -55,8 +56,20 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
         clock();    
         initializeList();
         checkStatus();
-        jLabel1.setText("<html><div color=red>**</div> Choose to update your working status!</html>");
-        
+        jLabel1.setText("<html><div color=red>**</div> Choose to update your working status!</html>");  
+    }
+    
+    public DeliverymanAttendances(String name,int count) {
+        this.count = count;
+        initComponents();
+        lblTotal.setVisible(false);
+        this.name = name;
+        message = "Welcome, " + name;
+        lblInfo.setText(message);
+        clock();    
+        initializeList();
+        checkStatus();
+        jLabel1.setText("<html><div color=red>**</div> Choose to update your working status!</html>");  
     }
 
     private void initializeList() {
@@ -144,12 +157,6 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
                         BtnBreak.setEnabled(false);
                         BtnWork.setEnabled(true);
                         break;
-                    case "work":
-                        BtnClockIn.setEnabled(false);
-                        BtnClockOut.setEnabled(true);
-                        BtnBreak.setEnabled(true);
-                        BtnWork.setEnabled(false);
-                        break;
                     case "delivering":
                         JOptionPane.showMessageDialog(null, "You are currently having a delivery. Please complete it before you could clock out.");
                         BtnClockIn.setEnabled(false);
@@ -214,6 +221,9 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
         lblDate = new javax.swing.JLabel();
         lblTotal = new javax.swing.JLabel();
         BtnWork = new javax.swing.JButton();
+
+        setClosable(true);
+        setMaximizable(true);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Deliveryman Clock In & Clock Out", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
 
@@ -357,17 +367,19 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }             
                 
-                for(int j=0; j < DmQueueTxt.size();j++){
-                    temp = DmQueueTxt.remove();
-                    if(!temp.getName().equals(DmListTxt.get(i).getName())){
-                        DmQueue.add(temp);
+                for(int j=1; j <= DmQueueTxt.size();j++){
+                    if(!DmQueueTxt.isEmpty()){
+                        temp = DmQueueTxt.remove();
+                        if(!temp.getName().equals(DmListTxt.get(i).getName())){
+                            newQueue.add(temp);
+                        }
                     }
                 }
-                DmQueue.add(DmListTxt.get(i));
+                newQueue.add(DmListTxt.get(i));
                 
                 try {
                         ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMenQueue.dat"));
-                        ooStream.writeObject(DmQueue);
+                        ooStream.writeObject(newQueue);
                     } catch (FileNotFoundException ex) {
                         JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
                     } catch (IOException ex) {
@@ -407,19 +419,21 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
                 }
                 
                 for(int j=0; j <= DmQueueTxt.size();j++){
-                    temp = DmQueueTxt.remove();
-                    if(!temp.getName().equals(DmListTxt.get(i).getName())){
-                        DmQueue.add(temp);
+                    if(!DmQueueTxt.isEmpty()){
+                        temp = DmQueueTxt.remove();
+                        if(!temp.getName().equals(DmListTxt.get(i).getName())){
+                            newQueue.add(temp);
+                        }
                     }
                 }
                 try {
-                        ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMenQueue.dat"));
-                        ooStream.writeObject(DmQueue);
-                    } catch (FileNotFoundException ex) {
-                        JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
-                    }
+                            ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMenQueue.dat"));
+                            ooStream.writeObject(newQueue);
+                        } catch (FileNotFoundException ex) {
+                            JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+                        } catch (IOException ex) {
+                            JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
+                        }
             }
         }
         calculateTotalTime();
@@ -440,6 +454,27 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
+            
+                for(int j=1; j <= DmQueueTxt.size();j++){
+                    if(!DmQueueTxt.isEmpty()){
+                        temp = DmQueueTxt.remove();
+                        if(!temp.getName().equals(DmListTxt.get(i).getName())){
+                            newQueue.add(temp);
+                        }
+                        else{
+                            temp.setWorkingStatus("break");
+                            newQueue.add(temp);
+                        }
+                    }        
+                }
+                try {
+                    ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMenQueue.dat"));
+                    ooStream.writeObject(newQueue);
+                } catch (FileNotFoundException ex) {
+                    JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
         lblTotal.setText("Take a Rest!");
@@ -450,12 +485,33 @@ public class DeliverymanAttendances extends javax.swing.JInternalFrame {
     private void BtnWorkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnWorkActionPerformed
         for(int i=0; i<DmListTxt.size();i++){
             if(DmListTxt.get(i).getName().equals(name)){
-                DmListTxt.get(i).setWorkingStatus("work");
+                DmListTxt.get(i).setWorkingStatus("available");
 
                 try {
                     ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMen.dat"));
                     ooStream.writeObject(DmListTxt);
                     JOptionPane.showMessageDialog(null, "Good luck for working.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                } catch (FileNotFoundException ex) {
+                    JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Cannot save to file", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
+           
+                for(int j=1; j <= DmQueueTxt.size();j++){
+                    if(!DmQueueTxt.isEmpty()){
+                        temp = DmQueueTxt.remove();
+                        if(!temp.getName().equals(DmListTxt.get(i).getName())){
+                            newQueue.add(temp);
+                        }
+                        else{
+                            temp.setWorkingStatus("work");
+                            newQueue.add(temp);
+                        }
+                    }
+                }
+                try {
+                    ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMenQueue.dat"));
+                    ooStream.writeObject(newQueue);
                 } catch (FileNotFoundException ex) {
                     JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
                 } catch (IOException ex) {

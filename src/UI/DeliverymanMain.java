@@ -10,6 +10,7 @@ public class DeliverymanMain extends javax.swing.JFrame {
 
     private static DeliverymanMain main = new DeliverymanMain();
     public String name;
+    public int count = 0;
     public DeliverymanMain() {
         initComponents();
     }
@@ -138,19 +139,38 @@ public class DeliverymanMain extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        DeliverymanAttendances inner = new DeliverymanAttendances(name);
-        Dimension desktopSize = main.getSize();
-        Dimension jInternalFrameSize = inner.getSize();
-        jdpWindow.add(inner); 
-        inner.pack();
-        inner.setLocation((desktopSize.width - jInternalFrameSize.width)/3,(desktopSize.height- jInternalFrameSize.height)/4);
-        inner.show();
+        if(count ==0){
+            DeliverymanAttendances inner = new DeliverymanAttendances(name);
+            Dimension desktopSize = main.getSize();
+            Dimension jInternalFrameSize = inner.getSize();
+            jdpWindow.removeAll();
+            jdpWindow.updateUI();
+            jdpWindow.add(inner); 
+            inner.pack();
+            inner.setLocation((desktopSize.width - jInternalFrameSize.width)/3,(desktopSize.height- jInternalFrameSize.height)/4);
+            inner.show();
+            count++;
+        }else{
+            DeliverymanAttendances inner = new DeliverymanAttendances(name,count);
+            Dimension desktopSize = main.getSize();
+            Dimension jInternalFrameSize = inner.getSize();
+            jdpWindow.removeAll();
+            jdpWindow.updateUI();
+            jdpWindow.add(inner); 
+            inner.pack();
+            inner.setLocation((desktopSize.width - jInternalFrameSize.width)/3,(desktopSize.height- jInternalFrameSize.height)/4);
+            inner.show();
+        }
+        
+       
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnCheckOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckOrderActionPerformed
         DeliverymanOrder inner = new DeliverymanOrder(name);
         Dimension desktopSize = main.getSize();
         Dimension jInternalFrameSize = inner.getSize();
+        jdpWindow.removeAll();
+        jdpWindow.updateUI();
         jdpWindow.add(inner); 
         inner.pack();
         inner.setLocation((desktopSize.width - jInternalFrameSize.width)/3,(desktopSize.height- jInternalFrameSize.height)/4);
@@ -161,9 +181,11 @@ public class DeliverymanMain extends javax.swing.JFrame {
         ManagerCheckStatus inner = new ManagerCheckStatus(name);
         Dimension desktopSize = main.getSize();
         Dimension jInternalFrameSize = inner.getSize();
+        jdpWindow.removeAll();
+        jdpWindow.updateUI();
         jdpWindow.add(inner); 
         inner.pack();
-        inner.setLocation((desktopSize.width - jInternalFrameSize.width)/3,(desktopSize.height- jInternalFrameSize.height)/4);
+        inner.setLocation((desktopSize.width - jInternalFrameSize.width)/5,(desktopSize.height- jInternalFrameSize.height)/4);
         inner.show();
     }//GEN-LAST:event_btnCheckDeliveryManActionPerformed
 
