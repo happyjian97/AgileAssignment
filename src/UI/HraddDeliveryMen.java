@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
  *
  * @author Keat
  */
-public class HraddDeliveryMen extends javax.swing.JInternalFrame {
+public class HrAddDeliveryMen extends javax.swing.JInternalFrame {
 
      private List<DeliveryMen> deliveryMenList = new ArrayList<>();
      
@@ -28,7 +28,7 @@ public class HraddDeliveryMen extends javax.swing.JInternalFrame {
     /**
      * Creates new form addDeliveryMen
      */
-    public HraddDeliveryMen() {
+    public HrAddDeliveryMen() {
         initComponents();
         
     }
@@ -332,11 +332,11 @@ public class HraddDeliveryMen extends javax.swing.JInternalFrame {
         String contactNo;
         String address;
         String type = "";
-        String status = "Active";
+        String status = "working";
         String clockIn = "";
         String clockOut = "";
         String totalWorking = "";
-        String workingStatus = "";
+        String workingStatus = "unavailable";
         String userName;
         String password;
         
@@ -448,7 +448,7 @@ public class HraddDeliveryMen extends javax.swing.JInternalFrame {
                                           try {
                                              ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream("DeliveryMen.dat"));
                                              ooStream.writeObject(deliveryMenList);
-                                             JOptionPane.showMessageDialog(null, "New Delivery Man added", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                                             JOptionPane.showMessageDialog(null, "New Hr Executive added", "Info", JOptionPane.INFORMATION_MESSAGE);
                                           } catch (FileNotFoundException ex) {
                                              JOptionPane.showMessageDialog(null, "File not found", "ERROR", JOptionPane.ERROR_MESSAGE);
                                           } catch (IOException ex) {
