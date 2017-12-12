@@ -17,6 +17,7 @@ public class OrderedMenu implements Serializable{
     private int menuId;
     private int quantity;
     private String menuName;
+    private double totalPrice;
     
     public void OrderMenu(int orderId, int menuId, int quantity, String menuName){
         this.menuId = menuId;
@@ -43,6 +44,16 @@ public class OrderedMenu implements Serializable{
 
     public void setMenuName(String menuName) {
         this.menuName = menuName;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    
+    
+    public double getTotalPrice() {
+        return totalPrice;
     }
     
     

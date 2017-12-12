@@ -146,6 +146,7 @@ public class DeliveryManLogin extends javax.swing.JFrame {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         initializeList();
+
         boolean status = false;
         if(jtfUserName.getText().equals("") || jtfPassword.getText().equals(""))
         {
